@@ -29,18 +29,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Yoooooo.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+	  <div onClick = {() => {
+	      writeMessage("heya", 12)
+	      console.log("messaging")
+	  }}
+	  > send a message</div>
       </header>
     </div>
   );
