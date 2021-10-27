@@ -3,9 +3,8 @@ import "./App.css";
 import React, { useState } from "react";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, get } from "firebase/database";
-import { Crypt, RSA } from "hybrid-crypto-js";
-import { nanoid } from "nanoid";
+import { getDatabase, ref, push, set, get, onChildAdded } from "firebase/database";
+import { Crypt } from "hybrid-crypto-js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -21,54 +20,47 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const crypt = new Crypt();
-//const rsa = new RSA();
+let messagesRef = ref(db, 'messages');
+let msgs = [];
 let publicKey = "";
 let privateKey = "";
+//let messagesGotten = false;
+let listenerCreated = false;
 
-/*
-// Generate RSA key pair, default key size is 4096 bit
-rsa.generateKeyPair(function (keyPair) {
-  // Callback function receives new key pair as a first argument
-  publicKey = keyPair.publicKey;
-});
-rsa.generateKeyPair(function (keyPair) {
-  // Callback function receives new key pair as a first argument
-  privateKey = keyPair.privateKey;
-});
-*/
-
-// https://stackoverflow.com/questions/8207655/get-time-of-specific-timezone
-function calcTime() {
-  let d = new Date();
-  let utc = d.getTime() + d.getTimezoneOffset() * 60000;
-  let nd = new Date(utc);
-  return nd.toLocaleString();
+function writeMessage(msg) 
+{
+  let encrypted = crypt.encrypt(publicKey, msg);
+  let messageRef = push(messagesRef); // create a new message
+  set(messageRef, { message: encrypted, });
 }
 
-function writeMessage(msg) {
-  let encrypted = crypt.encrypt(publicKey, msg);
-  set(ref(db, "messages/" + calcTime() + nanoid()), {
-    message: encrypted,
+// function getMessages()
+// {
+//   if (messagesGotten) return;
+//   messagesGotten = true;
+//   console.log("hello 1")
+//   get(messagesRef, messagesSnapshot => {
+//     console.log("hello")
+//     console.log(messagesSnapshot.val());
+//     messagesSnapshot.val().forEach(message => {
+//       console.log(message);
+//     });
+//   });
+// }
+
+function createListener() 
+{
+  if (listenerCreated) return;
+  listenerCreated = true;
+  onChildAdded(messagesRef, (messageSnapshot) => {
+    console.log(`Message added: ${messageSnapshot.val()}`);
+    try {
+      let msg = crypt.decrypt(privateKey, messageSnapshot.val()).message;
+      msgs.push(msg);
+      console.log(msg);
+    } catch (e) {}
   });
 }
-
-const rf = ref(db, "messages/");
-rf.onChange(
-  "value",
-  (snapshot) => {
-    let msgs = [];
-    snapshot.forEach((childSnapshot) => {
-      try {
-        let msg = crypt.decrypt(privateKey, childSnapshot.val()).message;
-        msgs.push(msg);
-      } catch (e) {}
-    });
-    console.log(msgs);
-  },
-  (errorObject) => {
-    console.log("The read failed: " + errorObject.name);
-  }
-);
 
 function App() {
   const [message, setMessage] = React.useState("");
@@ -81,6 +73,8 @@ function App() {
     writeMessage(message);
     setMessage("");
   };
+
+  //createListener();
 
   //writeMessage('Hello World', '1');
 
