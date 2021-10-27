@@ -84,7 +84,8 @@ function App() {
     if (listenerCreated) return;
     listenerCreated = true;
     onChildAdded(messagesRef, (messageSnapshot) => {
-      console.log(`Message added: ${messageSnapshot.val()}`);
+      console.log('Message added:');
+      console.log(messageSnapshot.val());
       try {
         let msg = crypt.decrypt(priv, messageSnapshot.val()).message;
         msgs.push(msg);
@@ -153,7 +154,7 @@ function App() {
           target="_blank"
           href="https://travistidwell.com/jsencrypt/demo/"
         >
-          create key pair (use 4906).
+          create key pair.
         </a>
         <div className="w-1/2 overflow-x-hidden overflow-y-scroll bg-black border-0 border-red-500 rounded h-72">
           {temparr.map((item, i) => {
