@@ -1,7 +1,5 @@
-import logo from "./logo.svg";
 import "./App.css";
 import React, { useState } from "react";
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import {
   getDatabase,
@@ -13,7 +11,6 @@ import {
 } from "firebase/database";
 import { Crypt } from "hybrid-crypto-js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDQ0MCzup4SKS8PQrvjBnVjMgi9p2EEBVo",
   authDomain: "scrt-54592.firebaseapp.com",
@@ -23,39 +20,11 @@ const firebaseConfig = {
   appId: "1:76850391699:web:a561eccd666b261c46fb66",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const crypt = new Crypt();
 let messagesRef = ref(db, "messages");
-//let messagesGotten = false;
 let listenerCreated = false;
-let temparr = [
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-  "sfsf",
-  "asfdasdf",
-  "sdfas",
-];
 
 function App() {
   const [message, setMessage] = React.useState("");
@@ -76,7 +45,7 @@ function App() {
 
   function writeMessage(msg) {
     let encrypted = crypt.encrypt(pub, msg);
-    let messageRef = push(messagesRef); // create a new message
+    let messageRef = push(messagesRef);
     set(messageRef, { message: encrypted });
   }
 
@@ -84,21 +53,21 @@ function App() {
     if (listenerCreated) return;
     listenerCreated = true;
     onChildAdded(messagesRef, (messageSnapshot) => {
-      console.log('Message added:');
+      console.log("Message added:");
       console.log(messageSnapshot.val());
       try {
         let decrypted = crypt.decrypt(privatee, messageSnapshot.val().message);
-        console.log("decrypted!")
+        console.log("decrypted!");
         let msg = decrypted.message;
-        let temp = msgs
+        let temp = msgs;
         temp.push(msg);
         setMsgs(temp);
         console.log(msg);
-      } catch (e) { console.log("Cannot decrypt?"); }
+      } catch (e) {
+        console.log("Cannot decrypt?");
+      }
     });
   }
-
-  //writeMessage('Hello World', '1');
 
   return (
     <div className="bg-gray-900 App">
@@ -119,7 +88,6 @@ function App() {
             <div className="flex flex-col">
               <input
                 className="p-3 mt-3 bg-black"
-                //defaultValue={'private'}
                 onChange={(e) => {
                   setPriv(e.target.value);
                   createListener(e.target.value);
@@ -149,8 +117,10 @@ function App() {
           </div>
         </form>
 
-	<div className="font-extrabold mt-9 hover:text-gray-400 transition-all"
-	    onClick={handleSubmit}>
+        <div
+          className="font-extrabold mt-9 hover:text-gray-400 transition-all"
+          onClick={handleSubmit}
+        >
           send.
         </div>
         <a
