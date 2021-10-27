@@ -87,7 +87,8 @@ function App() {
       console.log('Message added:');
       console.log(messageSnapshot.val());
       try {
-        let msg = crypt.decrypt(priv, messageSnapshot.val()).message;
+        let decrypted = crypt.decrypt(priv, messageSnapshot.val().message);
+        let msg = decrypted.message;
         msgs.push(msg);
         console.log(msg);
       } catch (e) { console.log("Cannot decrypt?"); }
