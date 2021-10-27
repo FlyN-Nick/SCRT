@@ -27,11 +27,18 @@ const crypt = new Crypt();
 let messagesRef = ref(db, "messages");
 let listenerCreated = false;
 
+//create your forceUpdate hook
+function useForceUpdate() {
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue((value) => value + 1); // update the state to force render
+}
+
 function App() {
   const [message, setMessage] = React.useState("");
   const [priv, setPriv] = React.useState("");
   const [pub, setPub] = React.useState("");
   const [msgs, setMsgs] = React.useState(["messages."]);
+  const forceUpdate = useForceUpdate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,6 +52,10 @@ function App() {
   const handleFocus = (event) => event.target.select();
 
   function writeMessage(msg) {
+    let temp = msgs;
+    temp.push(msg);
+    setMsgs(temp);
+    forceUpdate();
     let encrypted = crypt.encrypt(pub, msg);
     let messageRef = push(messagesRef);
     set(messageRef, { message: encrypted });
@@ -63,7 +74,7 @@ function App() {
         let temp = msgs;
         temp.push(msg);
         setMsgs(temp);
-	forceUpdate()
+        forceUpdate();
         console.log(msg);
       } catch (e) {
         console.log("Cannot decrypt?");
