@@ -125,6 +125,7 @@ function App() {
 		>
 		    send.
 		</div>
+		<div className="w-full pr-4 text-sm text-right border-0 border-red-400"> asdfas</div>
 	    </header>
 	</div>
     );
