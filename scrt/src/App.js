@@ -27,8 +27,11 @@ function writeMessage(msg, msgID) {
 
 function App() {
     const [message, setMessage] = React.useState("");
+    const [priv, setPriv] = React.useState("");
+    const [pub, setPub] = React.useState("");
 
     let handleSubmit = (e) => {
+
 	e.preventDefault()
 	console.log(message)
 	setMessage("")
@@ -38,7 +41,7 @@ function App() {
     //writeMessage('Hello World', '1');
 
     return (
-	<div className="App">
+	<div className="bg-gray-900 App">
 	    <header className="App-header">
 		<div
 		    onClick = {() => {
@@ -48,14 +51,39 @@ function App() {
 		    send a message
 		</div>
 		<form onSubmit={handleSubmit} >
-		    <input className="p-3 mt-3"
+		    <input className="p-3 mt-5 bg-black"
 			onChange={(e) => {
 			    setMessage(e.target.value)
 			}}
 			value={message}
 		    >
 		    </input>
+
+		    <div className="flex flex-row space-x-3">
+			<input className="p-3 mt-3 bg-black"
+			    onChange={(e) => {
+				setPriv(e.target.value)
+			    }}
+			    value={priv}
+			>
+			</input>
+			<input className="p-3 mt-3 bg-black"
+			    onChange={(e) => {
+				setPub(e.target.value)
+			    }}
+			    value={pub}
+			>
+			</input>
+		    </div>
+
+
 		</form>
+
+		<div className="mt-9"
+		    onClick={handleSubmit}
+		>
+		    send.
+		</div>
 	    </header>
 	</div>
     );
