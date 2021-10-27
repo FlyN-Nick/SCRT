@@ -3,7 +3,14 @@ import "./App.css";
 import React, { useState } from "react";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, set, get, onChildAdded } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  push,
+  set,
+  get,
+  onChildAdded,
+} from "firebase/database";
 import { Crypt } from "hybrid-crypto-js";
 
 // Your web app's Firebase configuration
@@ -20,63 +27,72 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const crypt = new Crypt();
-let messagesRef = ref(db, 'messages');
+let messagesRef = ref(db, "messages");
 let msgs = [];
-let publicKey = "";
-let privateKey = "";
 //let messagesGotten = false;
 let listenerCreated = false;
-
-function writeMessage(msg) 
-{
-  let encrypted = crypt.encrypt(publicKey, msg);
-  let messageRef = push(messagesRef); // create a new message
-  set(messageRef, { message: encrypted, });
-}
-
-// function getMessages()
-// {
-//   if (messagesGotten) return;
-//   messagesGotten = true;
-//   console.log("hello 1")
-//   get(messagesRef, messagesSnapshot => {
-//     console.log("hello")
-//     console.log(messagesSnapshot.val());
-//     messagesSnapshot.val().forEach(message => {
-//       console.log(message);
-//     });
-//   });
-// }
-
-function createListener() 
-{
-  if (listenerCreated) return;
-  listenerCreated = true;
-  onChildAdded(messagesRef, (messageSnapshot) => {
-    console.log(`Message added: ${messageSnapshot.val()}`);
-    try {
-      let msg = crypt.decrypt(privateKey, messageSnapshot.val()).message;
-      msgs.push(msg);
-      console.log(msg);
-    } catch (e) {}
-  });
-}
+let temparr = [
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+  "sfsf",
+  "asfdasdf",
+  "sdfas",
+];
 
 function App() {
   const [message, setMessage] = React.useState("");
   const [priv, setPriv] = React.useState("");
   const [pub, setPub] = React.useState("");
 
-  let handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     console.log(message);
     writeMessage(message);
     setMessage("");
+    //setPriv("")
+    //setPub("")
   };
+  const handleFocus = (event) => event.target.select();
 
-  //createListener();
+  function writeMessage(msg) {
+    let encrypted = crypt.encrypt(pub, msg);
+    let messageRef = push(messagesRef); // create a new message
+    set(messageRef, { message: encrypted });
+  }
+  
+  function createListener() {
+    if (listenerCreated) return;
+    listenerCreated = true;
+    onChildAdded(messagesRef, (messageSnapshot) => {
+      console.log(`Message added: ${messageSnapshot.val()}`);
+      try {
+        let msg = crypt.decrypt(priv, messageSnapshot.val()).message;
+        msgs.push(msg);
+        console.log(msg);
+      } catch (e) {}
+    });
+  }
 
-  //writeMessage('Hello World', '1');
+  createListener();
 
   return (
     <div className="bg-gray-900 App">
@@ -88,29 +104,62 @@ function App() {
             onChange={(e) => {
               setMessage(e.target.value);
             }}
+            onFocus={handleFocus}
             value={message}
           ></input>
+          <p className="mb-3 text-sm font-bold text-gray-100"> message. </p>
 
           <div className="flex flex-row space-x-3">
-            <input
-              className="p-3 mt-3 bg-black"
-              onChange={(e) => {
-                setPriv(e.target.value);
-              }}
-              value={priv}
-            ></input>
-            <input
-              className="p-3 mt-3 bg-black"
-              onChange={(e) => {
-                setPub(e.target.value);
-              }}
-              value={pub}
-            ></input>
+            <div className="flex flex-col">
+              <input
+                className="p-3 mt-3 bg-black"
+                //defaultValue={'private'}
+                onChange={(e) => {
+                  setPriv(e.target.value);
+                }}
+                onFocus={handleFocus}
+                value={priv}
+              ></input>
+              <p className="mb-3 text-sm font-bold text-gray-100">
+                {" "}
+                private key.{" "}
+              </p>
+            </div>
+            <div className="flex flex-col">
+              <input
+                className="p-3 mt-3 bg-black"
+                onChange={(e) => {
+                  setPub(e.target.value);
+                }}
+                value={pub}
+                onFocus={handleFocus}
+              ></input>
+              <p className="mb-3 text-sm font-bold text-gray-100">
+                {" "}
+                public key.{" "}
+              </p>
+            </div>
           </div>
         </form>
 
-        <div className="mt-9" onClick={handleSubmit}>
+        <div className="font-extrabold mt-9" onClick={handleSubmit}>
           send.
+        </div>
+        <a
+          className="w-full pr-4 mt-8 text-sm text-right border-0 border-red-400"
+          target="_blank"
+          href="https://travistidwell.com/jsencrypt/demo/"
+        >
+          create key pair (use 1024).
+        </a>
+        <div className="w-1/2 overflow-scroll bg-black border-0 border-red-500 rounded h-72">
+          {temparr.map((item, i) => {
+            return (
+              <div key={i} className="p-2 text-sm text-left">
+                {item}
+              </div>
+            );
+          })}
         </div>
       </header>
     </div>
