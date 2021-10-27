@@ -1,5 +1,6 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { forceUpdate, useState } from "react";
+// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import {
   getDatabase,
@@ -62,6 +63,7 @@ function App() {
         let temp = msgs;
         temp.push(msg);
         setMsgs(temp);
+	forceUpdate()
         console.log(msg);
       } catch (e) {
         console.log("Cannot decrypt?");
