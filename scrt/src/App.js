@@ -28,7 +28,6 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const crypt = new Crypt();
 let messagesRef = ref(db, "messages");
-let msgs = ["messages."];
 //let messagesGotten = false;
 let listenerCreated = false;
 let temparr = [
@@ -62,6 +61,7 @@ function App() {
   const [message, setMessage] = React.useState("");
   const [priv, setPriv] = React.useState("");
   const [pub, setPub] = React.useState("");
+  const [msgs, setMsgs] = React.useState(["messages."]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -80,22 +80,23 @@ function App() {
     set(messageRef, { message: encrypted });
   }
 
-  function createListener() {
+  function createListener(privatee) {
     if (listenerCreated) return;
     listenerCreated = true;
     onChildAdded(messagesRef, (messageSnapshot) => {
       console.log('Message added:');
       console.log(messageSnapshot.val());
       try {
-        let decrypted = crypt.decrypt(priv, messageSnapshot.val().message);
+        let decrypted = crypt.decrypt(privatee, messageSnapshot.val().message);
+        console.log("decrypted!")
         let msg = decrypted.message;
-        msgs.push(msg);
+        let temp = msgs
+        temp.push(msg);
+        setMsgs(temp);
         console.log(msg);
       } catch (e) { console.log("Cannot decrypt?"); }
     });
   }
-
-  createListener();
 
   //writeMessage('Hello World', '1');
 
@@ -121,6 +122,7 @@ function App() {
                 //defaultValue={'private'}
                 onChange={(e) => {
                   setPriv(e.target.value);
+                  createListener(e.target.value);
                 }}
                 onFocus={handleFocus}
                 value={priv}
