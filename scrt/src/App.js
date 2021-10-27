@@ -47,28 +47,33 @@ function writeMessage(msg, msgID) {
 function App() {
     const [message, setMessage] = React.useState("");
 
+    let handleSubmit = (e) => {
+	e.preventDefault()
+	console.log(message)
+	setMessage("")
+	//writeMessage(message, '1');
+    }
+
     //writeMessage('Hello World', '1');
-    //
+
     return (
 	<div className="App">
 	    <header className="App-header">
 		<div
 		    onClick = {() => {
-			console.log(message)
-			writeMessage(message, '1');
 
 		    }}
 		>
 		    send a message
 		</div>
-		<form>
-		<input className="p-3 mt-3"
-		    onChange={(e) => {
-			setMessage(e.target.value)
-		    }}
-		    value={message}
-		>
-		</input>
+		<form onSubmit={handleSubmit} >
+		    <input className="p-3 mt-3"
+			onChange={(e) => {
+			    setMessage(e.target.value)
+			}}
+			value={message}
+		    >
+		    </input>
 		</form>
 	    </header>
 	</div>
