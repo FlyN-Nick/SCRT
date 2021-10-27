@@ -21,10 +21,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const crypt = new Crypt();
-const rsa = new RSA();
+//const rsa = new RSA();
 let publicKey = "";
 let privateKey = "";
 
+/*
 // Generate RSA key pair, default key size is 4096 bit
 rsa.generateKeyPair(function (keyPair) {
   // Callback function receives new key pair as a first argument
@@ -34,6 +35,7 @@ rsa.generateKeyPair(function (keyPair) {
   // Callback function receives new key pair as a first argument
   privateKey = keyPair.privateKey;
 });
+*/
 
 // https://stackoverflow.com/questions/8207655/get-time-of-specific-timezone
 function calcTime() {
@@ -44,13 +46,29 @@ function calcTime() {
 }
 
 function writeMessage(msg) {
-  //console.log(publicKey);
-  //console.log(privateKey);
   let encrypted = crypt.encrypt(publicKey, msg);
   set(ref(db, "messages/" + calcTime() + nanoid()), {
     message: encrypted,
   });
 }
+
+const rf = ref(db, "messages/");
+rf.on(
+  "value",
+  (snapshot) => {
+    let msgs = [];
+    snapshot.forEach((childSnapshot) => {
+      try {
+        let msg = crypt.decrypt(privateKey, childSnapshot.val()).message;
+        msgs.push(msg);
+      } catch (e) {}
+    });
+    console.log(msgs);
+  },
+  (errorObject) => {
+    console.log("The read failed: " + errorObject.name);
+  }
+);
 
 function App() {
   const [message, setMessage] = React.useState("");
