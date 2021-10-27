@@ -66,10 +66,10 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(message);
-    writeMessage(message);
     setMessage("");
     //setPriv("")
     //setPub("")
+    //writeMessage(message, '1');
   };
   const handleFocus = (event) => event.target.select();
 
@@ -93,6 +93,8 @@ function App() {
   }
 
   createListener();
+
+  //writeMessage('Hello World', '1');
 
   return (
     <div className="bg-gray-900 App">
@@ -150,9 +152,9 @@ function App() {
           target="_blank"
           href="https://travistidwell.com/jsencrypt/demo/"
         >
-          create key pair (use 1024).
+          create key pair (use 4906).
         </a>
-        <div className="w-1/2 overflow-scroll bg-black border-0 border-red-500 rounded h-72">
+        <div className="w-1/2 overflow-x-hidden overflow-y-scroll bg-black border-0 border-red-500 rounded h-72">
           {temparr.map((item, i) => {
             return (
               <div key={i} className="p-2 text-sm text-left">
