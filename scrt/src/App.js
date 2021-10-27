@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useState } from 'react';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, get } from "firebase/database";
@@ -44,17 +45,34 @@ function writeMessage(msg, msgID) {
 }
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-	  <div onClick = {() => {
-	      writeMessage("HEYA ENCRYPTED", 314)
-	      console.log("messaging")
-	  }}
-	  > send a message</div>
-      </header>
-    </div>
-  );
+    const [message, setMessage] = React.useState("");
+
+    //writeMessage('Hello World', '1');
+    //
+    return (
+	<div className="App">
+	    <header className="App-header">
+		<div
+		    onClick = {() => {
+			console.log(message)
+			writeMessage(message, '1');
+
+		    }}
+		>
+		    send a message
+		</div>
+		<form>
+		<input className="p-3 mt-3"
+		    onChange={(e) => {
+			setMessage(e.target.value)
+		    }}
+		    value={message}
+		>
+		</input>
+		</form>
+	    </header>
+	</div>
+    );
 }
 
 export default App;
