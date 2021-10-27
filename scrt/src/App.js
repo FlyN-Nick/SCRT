@@ -2,13 +2,7 @@ import "./App.css";
 import React, { forceUpdate, useState } from "react";
 // we are using Firebase both for hosting and for the database for our messages.
 import { initializeApp } from "firebase/app";
-import {
-  getDatabase,
-  ref,
-  push,
-  set,
-  onChildAdded,
-} from "firebase/database";
+import { getDatabase, ref, push, set, onChildAdded } from "firebase/database";
 import { Crypt } from "hybrid-crypto-js";
 
 // to be secure, we should've put this in a separate file that was git ignored
@@ -33,7 +27,7 @@ const welcomeMessage = [
   "and start chatting!",
 ];
 
-// allows us to force update the app component 
+// allows us to force update the app component
 function useForceUpdate() 
 {
   const [value, setValue] = useState(0); // integer state
@@ -59,19 +53,29 @@ function App()
   const handleFocus = (event) => event.target.select();
 
   // when user sends a message, encrypt, write to database, and rerender
-  function writeMessage(msg) {
-    let temp = msgs;
-    temp.push(msg);
-    setMsgs(temp);
-    forceUpdate();
-    let encrypted = crypt.encrypt(pub, msg); // ! most important step, encrypt the message, so that only the intended receiver can decrypt it
-    let messageRef = push(messagesRef);
-    set(messageRef, { message: encrypted });
+  function writeMessage(msg) 
+  {
+    try 
+    {
+      let temp = msgs;
+      temp.push(msg);
+      setMsgs(temp);
+      forceUpdate();
+      let encrypted = crypt.encrypt(pub, msg); // ! most important step, encrypt the message, so that only the intended receiver can decrypt it
+      let messageRef = push(messagesRef);
+      set(messageRef, { message: encrypted });
+    } 
+    catch (err) 
+    {
+      console.log("Invalid public key.");
+      console.log(err);
+    }
   }
 
   // listens for new messages
-  function createListener(privatee) // two e's because private is a key word
+  function createListener(privatee) 
   {
+    // two e's because private is a key word
     // we do not want multiple listeners
     if (listenerCreated) return;
     listenerCreated = true;
@@ -81,12 +85,20 @@ function App()
       console.log(messageSnapshot.val());
       // try catch will fail when you do not have the proper private key (you were not the intended receiver)
       try {
-        // decrypt the message, add it to the message array, and rerender 
+        // decrypt the message, add it to the message array, and rerender
         let decrypted = crypt.decrypt(privatee, messageSnapshot.val().message);
         console.log("decrypted!");
         let msg = decrypted.message;
         let temp = msgs;
         temp.push(msg);
+        console.log("temp:");
+        console.log(temp.slice(0, 4));
+        // hack around to make sure welcome message gets removed.
+        if (temp.slice(0, 4).every((val, i) => { return val === welcomeMessage[i];}) && temp.length > 4)
+        {
+          console.log("sliced.");
+          temp = temp.slice(4, temp.length);
+        }
         setMsgs(temp);
         forceUpdate();
         console.log(msg);
