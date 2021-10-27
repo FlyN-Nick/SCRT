@@ -53,7 +53,7 @@ function writeMessage(msg) {
 }
 
 const rf = ref(db, "messages/");
-rf.on(
+rf.onChange(
   "value",
   (snapshot) => {
     let msgs = [];
