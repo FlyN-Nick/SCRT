@@ -1,17 +1,17 @@
 import "./App.css";
 import React, { forceUpdate, useState } from "react";
-// Import the functions you need from the SDKs you need
+// we are using Firebase both for hosting and for the database for our messages.
 import { initializeApp } from "firebase/app";
 import {
   getDatabase,
   ref,
   push,
   set,
-  get,
   onChildAdded,
 } from "firebase/database";
 import { Crypt } from "hybrid-crypto-js";
 
+// to be secure, we should've put this in a separate file that was git ignored
 const firebaseConfig = {
   apiKey: "AIzaSyDQ0MCzup4SKS8PQrvjBnVjMgi9p2EEBVo",
   authDomain: "scrt-54592.firebaseapp.com",
@@ -21,59 +21,67 @@ const firebaseConfig = {
   appId: "1:76850391699:web:a561eccd666b261c46fb66",
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase();
-const crypt = new Crypt();
-let messagesRef = ref(db, "messages");
-let listenerCreated = false;
+const app = initializeApp(firebaseConfig); // initalize firebase
+const db = getDatabase(); // initialize firebase database
+const crypt = new Crypt(); // crypto class for encrypting and decrypting
+let messagesRef = ref(db, "messages"); // reference in db for all of the messages
+let listenerCreated = false; // have we created a listener for messages yet
 const welcomeMessage = [
   "Welcome to SCRT!",
   "Generate a key pair,",
   "exchange public keys,",
-  "and start chatting!"
+  "and start chatting!",
 ];
 
-//create your forceUpdate hook
-function useForceUpdate() {
+// allows us to force update the app component 
+function useForceUpdate() 
+{
   const [value, setValue] = useState(0); // integer state
   return () => setValue((value) => value + 1); // update the state to force render
 }
 
-function App() {
+function App() 
+{
   const [message, setMessage] = React.useState("");
   const [priv, setPriv] = React.useState("");
   const [pub, setPub] = React.useState("");
   const [msgs, setMsgs] = React.useState(welcomeMessage);
   const forceUpdate = useForceUpdate();
 
+  // handler for when user sends a message.
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(message);
     writeMessage(message);
-    setMessage("");
-    //setPriv("")
-    //setPub("")
-    //writeMessage(message, '1');
+    setMessage(""); // clear text field
   };
+
   const handleFocus = (event) => event.target.select();
 
+  // when user sends a message, encrypt, write to database, and rerender
   function writeMessage(msg) {
     let temp = msgs;
     temp.push(msg);
     setMsgs(temp);
     forceUpdate();
-    let encrypted = crypt.encrypt(pub, msg);
+    let encrypted = crypt.encrypt(pub, msg); // ! most important step, encrypt the message, so that only the intended receiver can decrypt it
     let messageRef = push(messagesRef);
     set(messageRef, { message: encrypted });
   }
 
-  function createListener(privatee) {
+  // listens for new messages
+  function createListener(privatee) // two e's because private is a key word
+  {
+    // we do not want multiple listeners
     if (listenerCreated) return;
     listenerCreated = true;
+    // whenever someone creates a message in the db
     onChildAdded(messagesRef, (messageSnapshot) => {
       console.log("Message added:");
       console.log(messageSnapshot.val());
+      // try catch will fail when you do not have the proper private key (you were not the intended receiver)
       try {
+        // decrypt the message, add it to the message array, and rerender 
         let decrypted = crypt.decrypt(privatee, messageSnapshot.val().message);
         console.log("decrypted!");
         let msg = decrypted.message;
@@ -108,11 +116,10 @@ function App() {
               <input
                 className="p-3 mt-3 bg-black"
                 onChange={(e) => {
-                  setMsgs([])
+                  setMsgs([]);
                   setPriv(e.target.value);
                   createListener(e.target.value);
-                  if (e.target.value == "")
-                    setMsgs(welcomeMessage);
+                  if (e.target.value == "") setMsgs(welcomeMessage);
                 }}
                 onFocus={handleFocus}
                 value={priv}
