@@ -149,7 +149,7 @@ function App() {
 			target="_blank" href="https://travistidwell.com/jsencrypt/demo/">
 		create key pair (use 4906).
 		    </a>
-	    <div className="w-1/2 overflow-scroll bg-black border-0 border-red-500 rounded h-72">
+	    <div className="w-1/2 overflow-x-hidden overflow-y-scroll bg-black border-0 border-red-500 rounded h-72">
 		{temparr.map((item, i)=>{
 		    return (
 			<div key={i}
