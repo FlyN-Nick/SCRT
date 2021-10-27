@@ -26,6 +26,12 @@ const db = getDatabase();
 const crypt = new Crypt();
 let messagesRef = ref(db, "messages");
 let listenerCreated = false;
+const welcomeMessage = [
+  "Welcome to SCRT!",
+  "Generate a key pair,",
+  "exchange public keys,",
+  "and start chatting!"
+];
 
 //create your forceUpdate hook
 function useForceUpdate() {
@@ -37,7 +43,7 @@ function App() {
   const [message, setMessage] = React.useState("");
   const [priv, setPriv] = React.useState("");
   const [pub, setPub] = React.useState("");
-  const [msgs, setMsgs] = React.useState(["messages."]);
+  const [msgs, setMsgs] = React.useState(welcomeMessage);
   const forceUpdate = useForceUpdate();
 
   const handleSubmit = (e) => {
@@ -102,8 +108,11 @@ function App() {
               <input
                 className="p-3 mt-3 bg-black"
                 onChange={(e) => {
+                  setMsgs([])
                   setPriv(e.target.value);
                   createListener(e.target.value);
+                  if (e.target.value == "")
+                    setMsgs(welcomeMessage);
                 }}
                 onFocus={handleFocus}
                 value={priv}
