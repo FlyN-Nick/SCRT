@@ -28,7 +28,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 const crypt = new Crypt();
 let messagesRef = ref(db, "messages");
-let msgs = [];
+let msgs = ["messages."];
 //let messagesGotten = false;
 let listenerCreated = false;
 let temparr = [
@@ -79,7 +79,7 @@ function App() {
     let messageRef = push(messagesRef); // create a new message
     set(messageRef, { message: encrypted });
   }
-  
+
   function createListener() {
     if (listenerCreated) return;
     listenerCreated = true;
@@ -126,7 +126,7 @@ function App() {
               ></input>
               <p className="mb-3 text-sm font-bold text-gray-100">
                 {" "}
-                private key.{" "}
+                your private key.{" "}
               </p>
             </div>
             <div className="flex flex-col">
@@ -140,13 +140,14 @@ function App() {
               ></input>
               <p className="mb-3 text-sm font-bold text-gray-100">
                 {" "}
-                public key.{" "}
+                their public key.{" "}
               </p>
             </div>
           </div>
         </form>
 
-        <div className="font-extrabold mt-9" onClick={handleSubmit}>
+	<div className="font-extrabold mt-9 hover:text-gray-400 transition-all"
+	    onClick={handleSubmit}>
           send.
         </div>
         <a
@@ -157,7 +158,7 @@ function App() {
           create key pair.
         </a>
         <div className="w-1/2 overflow-x-hidden overflow-y-scroll bg-black border-0 border-red-500 rounded h-72">
-          {temparr.map((item, i) => {
+          {msgs.map((item, i) => {
             return (
               <div key={i} className="p-2 text-sm text-left">
                 {item}
