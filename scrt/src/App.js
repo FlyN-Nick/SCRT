@@ -24,6 +24,7 @@ const crypt = new Crypt();
 //const rsa = new RSA();
 let publicKey = "";
 let privateKey = "";
+let temparr = ["sfsf", "asfdasdf", "sdfas", "sfsf", "asfdasdf", "sdfas","sfsf", "asfdasdf", "sdfas","sfsf", "asfdasdf", "sdfas","sfsf", "asfdasdf", "sdfas","sfsf", "asfdasdf", "sdfas","sfsf", "asfdasdf", "sdfas","sfsf", "asfdasdf", "sdfas",]
 
 /*
 // Generate RSA key pair, default key size is 4096 bit
@@ -52,23 +53,23 @@ function writeMessage(msg) {
   });
 }
 
-const rf = ref(db, "messages/");
-rf.onChange(
-  "value",
-  (snapshot) => {
-    let msgs = [];
-    snapshot.forEach((childSnapshot) => {
-      try {
-        let msg = crypt.decrypt(privateKey, childSnapshot.val()).message;
-        msgs.push(msg);
-      } catch (e) {}
-    });
-    console.log(msgs);
-  },
-  (errorObject) => {
-    console.log("The read failed: " + errorObject.name);
-  }
-);
+//const rf = ref(db, "messages/");
+//rf.onChange(
+//  "value",
+//  (snapshot) => {
+//    let msgs = [];
+//    snapshot.forEach((childSnapshot) => {
+//      try {
+//        let msg = crypt.decrypt(privateKey, childSnapshot.val()).message;
+//        msgs.push(msg);
+//      } catch (e) {}
+//    });
+//    console.log(msgs);
+//  },
+//  (errorObject) => {
+//    console.log("The read failed: " + errorObject.name);
+//  }
+//);
 
 function App() {
     const [message, setMessage] = React.useState("");
@@ -80,8 +81,8 @@ function App() {
 	e.preventDefault()
 	console.log(message)
 	setMessage("")
-	setPriv("")
-	setPub("")
+	//setPriv("")
+	//setPub("")
 	//writeMessage(message, '1');
     }
     const handleFocus = (event) => event.target.select();
@@ -143,7 +144,20 @@ function App() {
 		>
 		    send.
 		</div>
-		<div className="w-full pr-4 text-sm text-right border-0 border-red-400"> asdfas</div>
+		    <a
+			className="w-full pr-4 mt-8 text-sm text-right border-0 border-red-400"
+			target="_blank" href="https://travistidwell.com/jsencrypt/demo/">
+		create key pair (use 4906).
+		    </a>
+	    <div className="w-1/2 overflow-scroll bg-black border-0 border-red-500 rounded h-72">
+		{temparr.map((item, i)=>{
+		    return (
+			<div key={i}
+			    className="p-2 text-sm text-left"
+			>{item}</div>
+		    )
+		})}
+	    </div>
 	    </header>
 	</div>
     );
