@@ -49,13 +49,16 @@ function App() {
     const [priv, setPriv] = React.useState("");
     const [pub, setPub] = React.useState("");
 
-    let handleSubmit = (e) => {
+    const handleSubmit = (e) => {
 
 	e.preventDefault()
 	console.log(message)
 	setMessage("")
+	setPriv("")
+	setPub("")
 	//writeMessage(message, '1');
     }
+    const handleFocus = (event) => event.target.select();
 
     //writeMessage('Hello World', '1');
 
@@ -74,31 +77,42 @@ function App() {
 			onChange={(e) => {
 			    setMessage(e.target.value)
 			}}
+			onFocus={handleFocus}
 			value={message}
 		    >
 		    </input>
+			<p className="mb-3 text-sm font-bold text-gray-100"> message. </p>
 
 		    <div className="flex flex-row space-x-3">
-			<input className="p-3 mt-3 bg-black"
-			    onChange={(e) => {
-				setPriv(e.target.value)
-			    }}
-			    value={priv}
-			>
-			</input>
-			<input className="p-3 mt-3 bg-black"
-			    onChange={(e) => {
-				setPub(e.target.value)
-			    }}
-			    value={pub}
-			>
-			</input>
+			<div className="flex flex-col">
+			    <input className="p-3 mt-3 bg-black"
+				//defaultValue={'private'}
+				onChange={(e) => {
+				    setPriv(e.target.value)
+				}}
+				onFocus={handleFocus}
+				value={priv}
+			    >
+			    </input>
+			    <p className="mb-3 text-sm font-bold text-gray-100"> private key. </p>
+			</div>
+			<div className="flex flex-col">
+			    <input className="p-3 mt-3 bg-black"
+				onChange={(e) => {
+				    setPub(e.target.value)
+				}}
+				value={pub}
+				onFocus={handleFocus}
+			    >
+			    </input>
+			    <p className="mb-3 text-sm font-bold text-gray-100"> public key. </p>
+			</div>
 		    </div>
 
 
 		</form>
 
-		<div className="mt-9"
+		<div className="font-extrabold mt-9"
 		    onClick={handleSubmit}
 		>
 		    send.
