@@ -66,6 +66,7 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(message);
+    writeMessage(message);
     setMessage("");
     //setPriv("")
     //setPub("")
@@ -88,7 +89,7 @@ function App() {
         let msg = crypt.decrypt(priv, messageSnapshot.val()).message;
         msgs.push(msg);
         console.log(msg);
-      } catch (e) {}
+      } catch (e) { console.log("Cannot decrypt?"); }
     });
   }
 
