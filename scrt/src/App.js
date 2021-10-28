@@ -57,10 +57,6 @@ function App()
   {
     try 
     {
-      let temp = msgs;
-      temp.push(msg);
-      setMsgs(temp);
-      forceUpdate();
       let encrypted = crypt.encrypt(pub, msg); // ! most important step, encrypt the message, so that only the intended receiver can decrypt it
       let messageRef = push(messagesRef);
       set(messageRef, { message: encrypted });
