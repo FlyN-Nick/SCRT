@@ -40,7 +40,7 @@ function App()
   const [priv, setPriv] = React.useState("");
   const [pub, setPub] = React.useState("");
   const [msgs, setMsgs] = React.useState(welcomeMessage);
-  const forceUpdate = useForceUpdate();
+  const forceUpdate = useForceUpdate(); // allows us to force update when needed
 
   // handler for when user sends a message.
   const handleSubmit = (e) => {
