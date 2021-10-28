@@ -4,16 +4,7 @@ import React, { forceUpdate, useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, set, onChildAdded } from "firebase/database";
 import { Crypt } from "hybrid-crypto-js";
-
-// to be secure, we should've put this in a separate file that was git ignored
-const firebaseConfig = {
-  apiKey: "AIzaSyDQ0MCzup4SKS8PQrvjBnVjMgi9p2EEBVo",
-  authDomain: "scrt-54592.firebaseapp.com",
-  projectId: "scrt-54592",
-  storageBucket: "scrt-54592.appspot.com",
-  messagingSenderId: "76850391699",
-  appId: "1:76850391699:web:a561eccd666b261c46fb66",
-};
+import { firebaseConfig } from "./firebase-config";
 
 const app = initializeApp(firebaseConfig); // initalize firebase
 const db = getDatabase(); // initialize firebase database
